@@ -20,62 +20,73 @@ bibliotek = {
 }
 
 färg.print ("Välkommen till Nisses bibliotek!", style="bold red\n")
-färg.print ("Vi har ett stort urval av genrer, vänligen välj en så ska vi se vilka böcker vi har för den valda kategorin.", style="bold purple")
-for x in bibliotek.keys():
-    print (x)
 
 def huvudprogram():
     while True:
-        def kolla_bibliotek():
-            while True:
-                try:
-                    kategori = input("\nKategori: ")
-                    if kategori not in bibliotek:
-                        raise KategorinFinnsEj (f"\nKategorin {kategori} finns ej i vårat bibliotek, välj en av våra följande kategorier: ")
-                    
-                    # Om genren (nykeln) finns i biblioteket (listan) så printar den alla böcker (värden) kopplat till nykeln. 
-                    elif kategori in bibliotek: 
-                        print (f"\nHär är våra följande böcker inom {kategori}: {bibliotek[kategori]}")
-                        
-                except KategorinFinnsEj as e:
-                    print (e)
-                    for x in bibliotek.keys():
-                        print (x)
-                    continue
-                
-                val = input ("Vill du fortsätta kolla igenom våra kategorier? ja/nej: ") .lower()
-                if val == "ja":
-                    continue
-                else:
-                    val = input ("\n[1] Lämna biblioteket\n[2] Låna en bok\n")
-                    if val == "1":
-                        sys.exit() #lämnar programmet helt
-                    elif val == "2":
-                        break
-            
-        kolla_bibliotek()
+        print ("\n[1] Se våra böcker\n[2] Låna en bok\n[3] Lämna tillbaks bok\n[4] Lämna biblioteket\n")
 
-        def låna_bok():
-            print ("Vilken bok vill du låna? Ange kategori och sedan namnet på boken, separerat med mellanslag: ")
-            
-            for kategori, böcker in bibliotek.items():
-                färg.print (f"{kategori}", style="bold red")
-                for bok in böcker:
-                    print (bok)
+        val = input ("")
 
-            try:
-                fråga = input ("")
-                kategori, bok = fråga.split(maxsplit=1)
-                if kategori not in bibliotek:
-                    raise KategorinFinnsEj (f"Vi har ej tyvärr kategorin {kategori}, vänligen välj en utav våra hundratals andra kategorier: ")
-                
-            
-            except KategorinFinnsEj as e:
-                print (f"\n{e}")                
-                for kategori in bibliotek.keys():
-                    print (kategori)
+        if val == "1":
+            kolla_bibliotek()
+        elif val == "2":
+            låna_bok()
+        elif val == "3":
+            lämna_tillbaks()
+        elif val == "4":
+            sys.exit
+        else:
+            print ("Där blev något fel, ange en siffra som motsvarar det du vill göra.")
 
+
+
+def kolla_bibliotek():
+    while True:
+        färg.print ("Vi har ett stort urval av genrer, vänligen välj en så ska vi se vilka böcker vi har för den valda kategorin.", style="bold purple")
+        for x in bibliotek.keys():
+            print (x)
+        try:
+            kategori = input("\nKategori: ")
+            if kategori not in bibliotek:
+                raise KategorinFinnsEj (f"\nKategorin {kategori} finns ej i vårat bibliotek, välj en av våra följande kategorier: ")
+            
+            # Om genren (nykeln) finns i biblioteket (listan) så printar den alla böcker (värden) kopplat till nykeln. 
+            elif kategori in bibliotek: 
+                print (f"\nHär är våra följande böcker inom {kategori}: {bibliotek[kategori]}")
                 
+        except KategorinFinnsEj as e:
+            print (e)
+            for x in bibliotek.keys():
+                print (x)
+            continue
+        
+        val = input ("Vill du fortsätta kolla igenom våra kategorier? ja/nej: ") .lower()
+        if val == "ja":
+            continue
+        else:
+           break
+            
+     
+
+def låna_bok():
+    print ("\n")
+    for kategori, böcker in bibliotek.items():
+            färg.print (f"{kategori}", style="bold red")
+            for bok in böcker:
+                print (bok)
+    while True:
+        print ("\nVilken bok vill du låna? Ange kategori och sedan namnet på boken, separerat med mellanslag: ")
+        
+
+        try:
+            fråga = input ("")
+            kategori, bok = fråga.split(maxsplit=1)
+            
+            if kategori not in bibliotek:
+                raise KategorinFinnsEj (f"Vi har tyvärr ej kategorin {kategori}. ")
+            
+            if bok not in bibliotek[kategori]:
+                raise BokenFinnsEj (f"Vi har tyvärr ej boken {bok}.")
 
             if bok in bibliotek[kategori]:
                 bibliotek[kategori].remove(bok)
@@ -86,21 +97,34 @@ def huvudprogram():
 
                 print (f"{bibliotek[kategori]}")
 
-            
-                
-        låna_bok()
-        
-        def lämna_tillbaks():
-            inmatning = input ("Mata in katerogi och sedan bok som du vill lämna tillbaks, separerat med mellanslag: ").lower()
-            # Splittar endast på första mellenslaget sen kan man skriva hur många man vill ifall boken har mellanslag
-            kategori, bok = inmatning.split(maxsplit=1)
-            bibliotek [kategori].append(bok)
-            with open ("datetime.txt", "a", encoding="utf-8") as lämna_tillbaks:
-                lämna_tillbaks.write(f"Du lämnade tillbaks {bok} {now}\n")
+        except ValueError:
+            färg.print("Var god ange både kategori och bok, separerat med mellanslag.", style="bold yellow")
 
-        lämna_tillbaks()
+        except KategorinFinnsEj as e:
+            färg.print (f"{e}", style="bold yellow")
+
+        except BokenFinnsEj as e:
+            färg.print (f"\n{e}", style="bold yellow")
+
+        val = input ("Vill du låna fler böcker? ja/nej: ") .lower()
+        if val == "ja":
+            continue
+        else:
+           break
+
+            
+
+            
+def lämna_tillbaks():
+
+    inmatning = input ("Mata in katerogi och sedan bok som du vill lämna tillbaks, separerat med mellanslag: ").lower()
+    # Splittar endast på första mellenslaget sen kan man skriva hur många man vill ifall boken har mellanslag
+    kategori, bok = inmatning.split(maxsplit=1)
+    bibliotek [kategori].append(bok)
+    with open ("datetime.txt", "a", encoding="utf-8") as lämna_tillbaks:
+        lämna_tillbaks.write(f"Du lämnade tillbaks {bok} {now}\n")
         
-        break
+    
 huvudprogram()     
 
 
