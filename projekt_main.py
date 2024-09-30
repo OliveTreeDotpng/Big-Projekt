@@ -1,9 +1,13 @@
 # Lägg till import daytime i en separat text fil som du sparar i en annan txt fil tid och datum användare lånade boken
 # Lägg till användare i en annan text fil som håller koll på vilka böcker de har sparat
 # Du kan skapa inloggningsuppgifter för en bibliotikarie
+# Clear screen in terminal when you exit a function
+# När man väljer meny val så behöver man ej trycka på enter
+
 from rich.console import Console
 from datetime import datetime
 import sys
+import os
 class BokenFinnsEj(Exception):
     pass
 class KategorinFinnsEj(Exception):
@@ -34,7 +38,7 @@ def huvudprogram():
         elif val == "3":
             lämna_tillbaks()
         elif val == "4":
-            sys.exit
+            sys.exit()
         else:
             print ("Där blev något fel, ange en siffra som motsvarar det du vill göra.")
 
@@ -64,9 +68,7 @@ def kolla_bibliotek():
         if val == "ja":
             continue
         else:
-           break
-            
-     
+           break  
 
 def låna_bok():
     print ("\n")
@@ -77,7 +79,6 @@ def låna_bok():
     while True:
         print ("\nVilken bok vill du låna? Ange kategori och sedan namnet på boken, separerat med mellanslag: ")
         
-
         try:
             fråga = input ("")
             kategori, bok = fråga.split(maxsplit=1)
@@ -110,10 +111,8 @@ def låna_bok():
         if val == "ja":
             continue
         else:
+           rensa_terminalen()
            break
-
-            
-
             
 def lämna_tillbaks():
 
@@ -124,7 +123,14 @@ def lämna_tillbaks():
     with open ("datetime.txt", "a", encoding="utf-8") as lämna_tillbaks:
         lämna_tillbaks.write(f"Du lämnade tillbaks {bok} {now}\n")
         
-    
+def rensa_terminalen():
+    if os.name == "nt":
+        os.system("cls")
+    else:
+        os.system("clear")
+
+
+
 huvudprogram()     
 
 
