@@ -5,14 +5,11 @@
 # När man väljer meny val så behöver man ej trycka på enter
 # Tkinkter för grafisk design
 # Classer
-# from pynput import keyboard
-# Fakturera om till Modulärt
-
-
+from pynput import keyboard
 from rich.console import Console
 from datetime import datetime
 import sys
-from låna_bok import låna_bok
+import os
 class BokenFinnsEj(Exception):
     pass
 class KategorinFinnsEj(Exception):
@@ -20,6 +17,30 @@ class KategorinFinnsEj(Exception):
 
 now = datetime.now() .strftime("%Y-%m-%d %H:%M")
 färg = Console()
+
+class Category:
+    def __init__(self, type) -> None:
+        self.type = type
+
+class Book:
+    def __init__(self, namn, category) -> None:
+        self.namn = namn
+        self.lånad = False
+        self.category = category
+
+skräck = Category("skräck")
+fantasy = Category("fantasy")
+romantik = Category("romantik")
+sci_fi = Category("sci-fi")
+
+bok_1 = Category("it", skräck)
+
+
+
+
+    
+
+
 
 bibliotek = {
     "skräck": ["it", "dracula", "alien isolation"],
@@ -34,11 +55,10 @@ def huvudprogram():
     while True:
         print ("\n[1] Se våra böcker\n[2] Låna en bok\n[3] Lämna tillbaks bok\n[4] Lämna biblioteket\n")
 
-        val = input ("")
         if val == "1":
             kolla_bibliotek()
         elif val == "2":
-            låna_bok(bibliotek)
+            låna_bok()
         elif val == "3":
             lämna_tillbaks()
         elif val == "4":
@@ -74,7 +94,49 @@ def kolla_bibliotek():
         else:
            break  
 
+def låna_bok():
+    print ("\n")
+    for kategori, böcker in bibliotek.items():
+            färg.print (f"{kategori}", style="bold red")
+            for bok in böcker:
+                print (bok)
+    while True:
+        print ("\nVilken bok vill du låna? Ange kategori och sedan namnet på boken, separerat med mellanslag: ")
+        
+        try:
+            fråga = input ("")
+            kategori, bok = fråga.split(maxsplit=1)
+            
+            if kategori not in bibliotek:
+                raise KategorinFinnsEj (f"Vi har tyvärr ej kategorin {kategori}. ")
+            
+            if bok not in bibliotek[kategori]:
+                raise BokenFinnsEj (f"Vi har tyvärr ej boken {bok}.")
 
+            if bok in bibliotek[kategori]:
+                bibliotek[kategori].remove(bok)
+                print (f"Du har nu lånat boken {bok}")
+
+                with open ("datetime.txt", "a", encoding="utf-8") as låna:
+                    låna.write(f"Du har lånat {bok} {now}\n")
+
+                print (f"{bibliotek[kategori]}")
+
+        except ValueError:
+            färg.print("Var god ange både kategori och bok, separerat med mellanslag.", style="bold yellow")
+
+        except KategorinFinnsEj as e:
+            färg.print (f"{e}", style="bold yellow")
+
+        except BokenFinnsEj as e:
+            färg.print (f"\n{e}", style="bold yellow")
+
+        val = input ("Vill du låna fler böcker? ja/nej: ") .lower()
+        if val == "ja":
+            continue
+        else:
+           rensa_terminalen()
+           break
             
 def lämna_tillbaks():
 
@@ -85,6 +147,11 @@ def lämna_tillbaks():
     with open ("datetime.txt", "a", encoding="utf-8") as lämna_tillbaks:
         lämna_tillbaks.write(f"Du lämnade tillbaks {bok} {now}\n")
         
+def rensa_terminalen():
+    if os.name == "nt":
+        os.system("cls")
+    else:
+        os.system("clear")
 
 
 
