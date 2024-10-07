@@ -4,12 +4,11 @@
 # Clear screen in terminal when you exit a function
 # När man väljer meny val så behöver man ej trycka på enter
 # Tkinkter för grafisk design
-# Gör ditt bibliotek om till Classer
+# Classer
 # from pynput import keyboard
 # Fakturera om till Modulärt
-# 
 
-import tkinter as tk
+from rensa_terminal import rensa_terminal
 from rich.console import Console
 from datetime import datetime
 import sys
@@ -22,43 +21,30 @@ class KategorinFinnsEj(Exception):
 now = datetime.now() .strftime("%Y-%m-%d %H:%M")
 färg = Console()
 
-bibliotek = {,,
+bibliotek = {
     "skräck": ["it", "dracula", "alien isolation"],
     "fantasy": ["cold days", "lord of the rings", "mistborn"],
     "romantik": ["twilight", "det är så logiskt, alla fattar förutom du", "syskonkärlek" ],
     "sci-fi": ["mickey 7", "bob", "zero"],
 }
 
+färg.print ("Välkommen till Nisses bibliotek!", style="bold red\n")
 
 def huvudprogram():
-    root = tk.Tk()
+    while True:
+        print ("\n[1] Se våra böcker\n[2] Låna en bok\n[3] Lämna tillbaks bok\n[4] Lämna biblioteket\n")
 
-# Sätter titel på huvudfönstret
-    root.title("Bibliotek.exe")
-
-    root.minsize(650,480)
-
-    def button_click_låna():
-        låna_bok(bibliotek) # Här kallar jag på låna bok i root fönstret
-    
-    def button_click_låna():
-        låna_bok(bibliotek) # Här kallar jag på låna bok i root fönstret
-        
-
-    # Skapa en Label och lägg till den i fönstret
-    label = tk.Label(root, text="Vi säger så :)")
-    display_input = tk.Entry(root, width=100)
-    display_input.pack()
-
-    button = tk.Button(root,
-                    text = "Låna bok",
-                    command = button_click_låna )
-
-    label.pack()
-
-    button.pack(padx=20, pady=20)
-    # Startar huvudloopen
-    root.mainloop()
+        val = input ("")
+        if val == "1":
+            kolla_bibliotek()
+        elif val == "2":
+            låna_bok(bibliotek)
+        elif val == "3":
+            lämna_tillbaks()
+        elif val == "4":
+            sys.exit()
+        else:
+            print ("Där blev något fel, ange en siffra som motsvarar det du vill göra.")
 
 
 
