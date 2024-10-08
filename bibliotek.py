@@ -4,12 +4,6 @@ class Bok:
         self.författare = författare
         self.lånad_status = False
     
-    def låna_bok(self):
-        self.lånad_status = True
-    
-    def lämna_tillbaks(self):
-        self.lånad_status = False
-    
     def __str__(self) -> str:
         return f"{self.titel} av {self.författare}"
 
@@ -30,6 +24,12 @@ class Kategori:
             for bok in self.böcker:
                 print (bok)
 
+class Bibliotek: 
+    
+
+
+
+    
 # Skapa kategorier
 skräck = Kategori("Skräck")
 fantasy = Kategori("Fantasy")
@@ -71,5 +71,7 @@ romantik.lägg_till_bok(romantik3)
 sci_fi.lägg_till_bok(scifi_1)
 sci_fi.lägg_till_bok(scifi_2)
 sci_fi.lägg_till_bok(scifi_3)
+
+bib = Bibliotek(skräck, fantasy, romantik)
 
 #skräck.visa_böcker()
