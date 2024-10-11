@@ -1,16 +1,5 @@
-import sys
-
-class Bok:
-    def __init__(self, titel, författare, kategori ) -> None:
-        self.titel = titel
-        self.författare = författare
-        self.kategori = kategori
-
-        self.utlånad = False # Alla böcker som blir skapade får automatiskt statusen "inte utlånad"
-
-    # Lägg till en __str__-metod för att definiera hur boken ska presenteras
-    def __str__(self) -> str:
-        return f"{self.titel} av {self.författare} (Kategori: {self.kategori})"
+from datetime import datetime
+from Bok import Bok
 
 class Bibliotek:
     def __init__(self) -> None:
@@ -23,10 +12,13 @@ class Bibliotek:
             if bok.titel.lower() == titel.lower(): # Kontrollera om boken finns i inventory
                 if bok.utlånad == True:  # Om boken redan har status True så betyder det att den redan är utlånad.
                     print (f"{bok.titel} är redan utlånad")
-                    return # Avsluta metoden
+                    return
 
                 bok.utlånad = True # Här ändrar vi status till True att den är utlånad, eftersom vi vet att den inte var utlånad tidigare
                 print (f"{bok.titel} är nu utlånad")
+                with open ("log.txt", "a", encoding="utf-8") as fil:
+                    now = datetime.now() .strftime("%Y-%m-%d %H:%M")
+                    fil.write(f"Du har lånat {bok.titel} {now}\n")
                 return         
                
         print (f"Hittade ingen bok med titeln '{titel}' i biblioteket.")
@@ -73,9 +65,6 @@ class Bibliotek:
 
         print (f"Boken {titel} av {författare} har beställts")
 
-    def ta_bort_bok(self):
-        pass
-
     def visa_böcker_per_kategori(self):
             print("[1] Skräck\n[2] Fantasy\n[3] Romantik\n[4] Sci-Fi")
             val = input ("Välj en kategori: ")
@@ -110,57 +99,14 @@ class Bibliotek:
 
     def visa_alla_böcker(self):
         print ()
+        index = 0
         for böcker in self.inventory:
-            print (böcker) # Använd __str__-metoden i Bok för snygg utskrift
+            index += 1
+            print (index, böcker) # Använd __str__-metoden i Bok för snygg utskrift
         print ()
 
-def huvudprogram():
-    while True:
-        print ("\n[1] Se alla våra böcker\n[2] Visa böcker per kategori\n[3] Låna en bok\n[4] Lämna tillbaks bok\n[5] Beställ bok till vårat bibliotek\n[6] Lämna biblioteket\n")
+    def ta__bort_böcker(self, vald):
+        self.inventory.pop(vald-1) # tar bort 1 för att matcha index
+        
 
-        val = input ("")
-        if val == "1":
-            mitt_bibliotek.visa_alla_böcker()
-        elif val == "2":
-            mitt_bibliotek.visa_böcker_per_kategori()
-        elif val == "3":
-            mitt_bibliotek.låna()
-        elif val == "4":
-            mitt_bibliotek.lämna_tillbaks()
-        elif val == "5":
-            mitt_bibliotek.lägg_till_bok()
-        elif val == "6":
-            print ("Hej då välkommen åter!")
-            sys.exit()
-        else:
-            print ("Där blev något fel, ange en siffra som motsvarar det du vill göra.")
-
-
-
-# Skapa ett objekt av klassen Bibliotek för att lagra och hantera böcker
-mitt_bibliotek = Bibliotek()
-
-# Lägger till böcker i inventarielistan
-mitt_bibliotek.inventory.append(Bok("IT", "Stephen Hawking", "Skräck"))
-mitt_bibliotek.inventory.append(Bok("Dracula", "Bram Stoker", "Skräck"))
-mitt_bibliotek.inventory.append(Bok("Frankenstein", "Mary Shelley", "Skräck" ))
-
-mitt_bibliotek.inventory.append(Bok("Cold Days", "Jim Butcher", "Fantasy"))
-mitt_bibliotek.inventory.append(Bok("Lord Of The Rings", "J.R.R Tolkien", "Fantasy" ))
-mitt_bibliotek.inventory.append(Bok("Mistborn", "Brandon Sanderson", "Fantasy"))
-
-mitt_bibliotek.inventory.append(Bok("The Fault In Our Stars", "John Green", "Romantik"))
-mitt_bibliotek.inventory.append(Bok("Det är så logiskt, alla fattar utom du", "Lisa Bjärbo", "Romantik"))
-mitt_bibliotek.inventory.append(Bok("Syskonkärlek", "Katarina von Bredow", "Romantik"))
-
-mitt_bibliotek.inventory.append(Bok("Mickey 7", "Edward Ashton", "Sci-Fi"))
-mitt_bibliotek.inventory.append(Bok("We are Legion (We are Bob)", "Dennis E. Taylor", "Sci-Fi"))
-mitt_bibliotek.inventory.append(Bok("Forging Zero", "Sara King", "Sci-Fi"))
-
-# Printar alla böcker
-#mitt_bibliotek.visa_alla_böcker()
-
-
-
-huvudprogram()
 
