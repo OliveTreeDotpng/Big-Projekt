@@ -1,9 +1,9 @@
 from datetime import datetime
-from Bok import Bok
+from bok import Bok
 
 class Bibliotek:
     def __init__(self) -> None:
-        self.inventory = [] # Skapar en tom inventarielista för att lagra böcker i biblioteket
+        self.inventory: list = [] # Skapar en tom inventarielista för att lagra böcker i biblioteket
      
     def låna(self):
         titel = input ("Ange titeln på boken du vill låna: ")

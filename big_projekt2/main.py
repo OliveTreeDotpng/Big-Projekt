@@ -1,6 +1,9 @@
-from Bibliotek import Bibliotek
-from Bok import Bok
+# SQL lite 3
+from bibliotek import Bibliotek
+from bok import Bok
 import sys
+import sqlite3
+
 
 def huvudprogram():
     while True:
