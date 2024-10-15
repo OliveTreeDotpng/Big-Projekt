@@ -7,3 +7,5 @@ CREATE TABLE IF NOT EXISTS böcker (
 );
 
 -- Här kan andra tabeller eller annat stå och det kommer läsas in.
+
+

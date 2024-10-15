@@ -21,3 +21,9 @@ connection.commit()
 connection.close()
 
 print ("Databasen och tabellerna är skapade.")
+
+
+
+
+
+  
