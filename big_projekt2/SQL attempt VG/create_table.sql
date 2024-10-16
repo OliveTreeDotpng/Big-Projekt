@@ -9,3 +9,8 @@ CREATE TABLE IF NOT EXISTS böcker (
 -- Här kan andra tabeller eller annat stå och det kommer läsas in.
 
 
+-- Exempel
+
+-- Kolumn = id eller titel eller författare osv
+
+-- Rad: 1, "Harry Potter", "J.K. Rowling", "Fantasy", False....varje gång användaren skapar en ny bok som skapas en rad.
