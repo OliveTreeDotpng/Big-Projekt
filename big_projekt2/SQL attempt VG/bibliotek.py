@@ -41,7 +41,13 @@ class Bibliotek:
         bok = self.cursor.fetchone()
 
         if bok:
-             
+            # Uppdaterar boken med status ej lånad. "Where id" med parametern bok[0] gör så att endast den boken ändras till tillbakslånad.
+            self.cursor.execute("UPDATE böcker SET utlånad = 0 WHERE id = ?", (bok[0],))
+            self.connect.commit()
+            print (f"Boken {bok[1]} har lämnats tillbaks.")
+        
+        else:
+             print (f"Boken {titel} finns inte bland våra lånade böcker.")
 
 
     def lägg_till_bok(self):
