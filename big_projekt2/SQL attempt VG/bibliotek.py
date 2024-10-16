@@ -1,11 +1,14 @@
 from datetime import datetime
-from bok import Bok
 import sqlite3
+
+# Du kommer se platshållare såsom (?) i vissa metoder, detta är för att förhindra SQL-injektion
+# Detta hindrar användare från att skicka skadlig kod via inputs.
+# Exempel på SQL-injektion: Harry Potter; DROP TABLE böcker; --
 
 class Bibliotek:
     def __init__(self) -> None:
         # Skapa anslutning till databasen när objektet skapas
-        self.connect = sqlite3.connect("bibliotet.db") # Ansluter till databasen
+        self.connect = sqlite3.connect("bibliotek.db") # Ansluter till databasen
         self.cursor = self.connect.cursor() # Skapar cursor OBJEKT för att köra SQL kommandon
 
     def låna(self):
@@ -34,6 +37,7 @@ class Bibliotek:
             else:
                 print(f"Boken {titel} är antingen utlånad eller finns inte i biblioteket.")
 
+
     def lämna_tillbaks(self):
         titel = input ("Ange titel på boken du vill lämna tillbaks")
         self.cursor.execute("SELECT * FROM böcker WHERE titel = ? AND utlånad =  1", (titel,))
@@ -41,7 +45,7 @@ class Bibliotek:
         bok = self.cursor.fetchone()
 
         if bok:
-            # Uppdaterar boken med status ej lånad. "Where id" med parametern bok[0] gör så att endast den boken ändras till tillbakslånad.
+            # Uppdaterar boken med status ej lånad. "WHERE id" med parametern bok[0] gör så att endast denna bok med ett unikt ID ändrar status och inte flera som råkar ha samma namn.
             self.cursor.execute("UPDATE böcker SET utlånad = 0 WHERE id = ?", (bok[0],))
             self.connect.commit()
             print (f"Boken {bok[1]} har lämnats tillbaks.")
@@ -57,15 +61,13 @@ class Bibliotek:
         kategori = input ("Ange kategorin för boken: ")
         
         # Lägger till nya boken i databastabellen "böcker" med hjälp utav cursor objektet.
-        self.cursor.execute("INSERT INTO böcker (titel, författare. kategori, utlånad) VALUES (?, ?, ?, ?)",
+        self.cursor.execute("INSERT INTO böcker (titel, författare, kategori, utlånad) VALUES (?, ?, ?, ?)",
                             (titel, författare, kategori, False))
         self.connect.commit() # Sparar ändringarna permanent i databastabellen
 
         # Informerar användare att boken har lagts till.
         print (f"Boken {titel} av {författare} har lagts till i biblioteket")
-        
 
-        
 
     def visa_böcker_per_kategori(self):
             kategori = input ("Ange kategori för böcker du vill se: ").lower()
@@ -76,7 +78,7 @@ class Bibliotek:
             # Hämtar alla böcker från SQL tabellen som en lista av tuples
             böcker = self.cursor.fetchall() 
 
-            # Om listan "böcker" inte är tom så körs koden i if blocket. Python tolkar en tom lista som FALSE
+            # Om listan "böcker" inte är tom så körs koden i if blocket. Python tolkar en tom lista som FALSE och kör därmed inte if satsen.
             if böcker:
                 print (f"Böcker i kategorin '{kategori}':")
                 for bok in böcker:
@@ -88,15 +90,33 @@ class Bibliotek:
             
 
     def visa_alla_böcker(self):
-        print ()
-        index = 0
-        for böcker in self.inventory:
-            index += 1
-            print (index, böcker) # Använd __str__-metoden i Bok för snygg utskrift
-        print ()
+        
+        # Hämtar alla böcker från databasen
+        self.cursor.execute("SELECT * FROM böcker")
+        
+        # Hämtar alla böcker i en tuple 
+        skriv_ut_alla_böcker = self.cursor.fetchall()
+
+        # Om listan är tom, printa följande
+        if not skriv_ut_alla_böcker:
+            print (f"Det finns inga böcker, vårat bibliotek är tomt!")
+            return
+        
+        # printar alla böcker
+        for bok in skriv_ut_alla_böcker:
+            print (f"ID: {bok[0]}, Titel: {bok[1]}, Författare: {bok[2]}, Kategori: {bok[3]}, Utlånad: {bok[4]}")
+
+
 
     def ta__bort_böcker(self, vald):
-        self.inventory.pop(vald-1) # tar bort 1 för att matcha index
-        
+
+        titel = input ("Ange titeln på boken du vill ta bort: ")
+
+        self.cursor.execute("DELETE FROM böcker WHERE titel = ?", (titel,)) # Raderar boken som matchar med parametern i våran tuple.
+
+        self.connect.commit() # Spara ändringar permanent
+
+        print(f"Boken {titel} har tagits bort från biblioteket.")
+
 
 
